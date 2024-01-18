@@ -1,0 +1,33 @@
+version: '3'
+services:
+  backend:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    volumes:
+      - ./back:/app
+    env_file:
+      - ./back/.env
+    ports:
+      - "4000:4000"
+    depends_on:
+      - database
+
+  database:
+    image: postgres:latest
+    env_file:
+      - ./back/.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-volume:/var/lib/postgresql/data
+      - ./db.sql:/pgdata/db.sql
+
+  frontend:
+    build:
+      context: ./front
+    ports:
+      - "80:80"
+
+volumes:
+  db-volume:
